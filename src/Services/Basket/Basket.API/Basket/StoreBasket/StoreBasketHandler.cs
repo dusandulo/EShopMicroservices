@@ -1,5 +1,4 @@
-﻿
-namespace Basket.API.Basket.StoreBasket
+﻿namespace Basket.API.Basket.StoreBasket
 {
     public record StoreBasketCommand(ShoppingCart Cart)
         : ICommand<StoreBasketResult>;
@@ -14,16 +13,14 @@ namespace Basket.API.Basket.StoreBasket
         }
     }
     public class StoreBasketCommandHandler
+        (IBasketRepository repository)
         : ICommandHandler<StoreBasketCommand, StoreBasketResult>
     {
         public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
         {
             ShoppingCart cart = command.Cart;
-
-            //TODO: Store the cart in the database
-            //TODO: update cache
-
-            return new StoreBasketResult("swn");
+            await repository.StoreBasket(cart, cancellationToken);
+            return new StoreBasketResult(command.Cart.UserName);
         }
     }
 }

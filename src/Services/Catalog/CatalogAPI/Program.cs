@@ -18,7 +18,7 @@ builder.Services.AddCarter();
 builder.Services.AddMarten(opts =>
 {
     opts.Connection(builder.Configuration.GetConnectionString("Database")!);
-    opts.AutoCreateSchemaObjects = Weasel.Core.AutoCreate.All;
+    opts.AutoCreateSchemaObjects = Weasel.Core.AutoCreate.CreateOrUpdate;
 }).UseLightweightSessions();
 
 if (builder.Environment.IsDevelopment())
