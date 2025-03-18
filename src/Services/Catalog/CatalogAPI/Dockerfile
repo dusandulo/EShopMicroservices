@@ -2,15 +2,11 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
-# Install the dev certificate generation tool
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends libc6-dev \
-    && rm -rf /var/lib/apt/lists/*
-RUN dotnet dev-certs https
 
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -19,7 +15,7 @@ WORKDIR /src
 COPY ["Services/Catalog/CatalogAPI/CatalogAPI.csproj", "Services/Catalog/CatalogAPI/"]
 COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
 RUN dotnet restore "./Services/Catalog/CatalogAPI/CatalogAPI.csproj"
-COPY . . 
+COPY . .
 WORKDIR "/src/Services/Catalog/CatalogAPI"
 RUN dotnet build "./CatalogAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
